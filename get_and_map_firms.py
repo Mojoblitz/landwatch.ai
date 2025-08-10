@@ -25,7 +25,7 @@ MAP_PATH = SITE_DIR / "index.html"   # <-- GitHub Pages will serve this
 
 # ============== Secrets / Config ==============
 # IMPORTANT: Do NOT hardcode secrets. Provide them via environment / GitHub Actions.
-MAP_KEY = os.getenv("ef237f447ad3d6bb05d187024f80c981")            # required for FIRMS area API
+MAP_KEY = os.getenv("FIRMS_MAP_KEY")            # required for FIRMS area API
 # API_KEY = os.getenv("ef237f447ad3d6bb05d187024f80c981")          # not used in this script (MAP_KEY is required)
 
 SOURCE   = "VIIRS_NOAA20_NRT"                   # VIIRS_NOAA20_NRT | VIIRS_SNPP_NRT | MODIS_C6_1
@@ -273,4 +273,5 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         print("\n❌ Error:", e)
+
         sys.exit(1)
