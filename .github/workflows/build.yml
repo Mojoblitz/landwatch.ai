@@ -21,7 +21,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
+      - name: Debug env (no secret value, just presence)
+        run: |
+          python - << 'PY'
+          import os
+          print("HAS_FIRMS_MAP_KEY =", bool(os.getenv("FIRMS_MAP_KEY")))
+          PY
+    
       - name: Build site
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
