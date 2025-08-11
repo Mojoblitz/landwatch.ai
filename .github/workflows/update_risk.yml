@@ -50,12 +50,14 @@ jobs:
         run: |
           mkdir -p docs/geo
           cp -f data/processed/risk_latest.geojson docs/geo/risk_latest.geojson
+          # NEW: write a timestamp file for display on the site
+          date -u +"%Y-%m-%d %H:%M UTC" | tee docs/geo/last_updated.txt
 
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/geo/risk_latest.geojson
+          git add docs/geo/risk_latest.geojson docs/geo/last_updated.txt
           if ! git diff --cached --quiet; then
             git commit -m "chore: nightly risk data update"
             git push
