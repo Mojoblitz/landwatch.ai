@@ -25,19 +25,25 @@ def fetch(lat, lon, retries=2, backoff=1.3):
     url = OPEN_METEO_URL.format(lat=lat, lon=lon)
     for a in range(retries+1):
         r = requests.get(url, timeout=20)
-        if r.status_code==200: return r.json()
-        if a<retries: time.sleep(backoff**a)
+        if r.status_code==200:
+            return r.json()
+        if a<retries:
+            time.sleep(backoff**a)
     raise RuntimeError(f"Open-Meteo error {r.status_code}: {r.text[:200]}")
 
 def latest_hour(payload):
-    h = payload.get("hourly", {}); t = h.get("time", [])
-    if not t: return None
-    i=len(t)-1
-    def gv(k): arr=h.get(k, [])
-    # noqa: E701
-                return arr[i] if i<len(arr) else None
+    h = payload.get("hourly", {})
+    times = h.get("time", [])
+    if not times:
+        return None
+    i = len(times) - 1
+
+    def gv(key):
+        arr = h.get(key, [])
+        return arr[i] if i < len(arr) else None
+
     return {
-        "timestamp": t[i],
+        "timestamp": times[i],
         "temperature_2m": gv("temperature_2m"),
         "relative_humidity_2m": gv("relative_humidity_2m"),
         "windspeed_10m": gv("windspeed_10m"),
@@ -48,7 +54,9 @@ def main():
     print("▶ Building 5km grid...")
     grid = make_grid(BBOX, 5.0)
     target=300; step=max(1, math.ceil(len(grid)/target))
-    grid_s = grid.iloc[::step].copy(); grid_s["centroid"]=grid_s.geometry.centroid
+    grid_s = grid.iloc[::step].copy()
+    grid_s["centroid"]=grid_s.geometry.centroid  # OK for sampling
+
     print(f"▶ Fetching Open-Meteo weather for {len(grid_s)} grid centroids (step={step})...")
     rows=[]
     for _, r in grid_s.iterrows():
@@ -56,20 +64,23 @@ def main():
         try:
             p = fetch(lat,lon)
             lh = latest_hour(p)
-            if not lh: continue
+            if not lh:
+                continue
             lh["lat"]=lat; lh["lon"]=lon
             rows.append(lh)
         except Exception as e:
             print(f"⚠ Weather fetch failed for {lat:.4f},{lon:.4f}: {e}")
     if not rows:
-        print("⚠ No weather rows fetched."); return
+        print("⚠ No weather rows fetched.")
+        return
+
     df = pd.DataFrame(rows)
     gdf = gpd.GeoDataFrame(df, geometry=[Point(xy) for xy in zip(df["lon"], df["lat"])], crs="EPSG:4326")
+
     date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     os.makedirs(RAW_DIR, exist_ok=True); os.makedirs(PROCESSED_DIR, exist_ok=True)
     gdf.to_csv(os.path.join(RAW_DIR, f"weather_grid_{date_str}.csv"), index=False)
     gdf.to_file(os.path.join(PROCESSED_DIR, f"weather_grid_{date_str}.geojson"), driver="GeoJSON")
     print("🎉 Weather grid ready.")
-
 if __name__ == "__main__":
     main()
