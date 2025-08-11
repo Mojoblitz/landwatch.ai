@@ -1,34 +1,39 @@
-# LandWatch.AI — Wildfire Risk Map
+# 🌍 LandWatch.AI — Wildfire Risk Map
 
-**Live wildfire risk monitoring for Manitoba and surrounding regions, powered by NASA FIRMS satellite data and Open-Meteo weather forecasts.**  
-LandWatch.AI automatically updates daily with the latest wildfire risk levels and weather conditions.
+[![Pages Build](https://github.com/Mojoblitz/landwatch.ai/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/Mojoblitz/landwatch.ai/actions)
+![Last Updated](https://img.shields.io/github/last-commit/Mojoblitz/landwatch.ai?label=Last%20Update)
+![License](https://img.shields.io/github/license/Mojoblitz/landwatch.ai)
 
-🌐 **Live Map:** [View Here](https://mojoblitz.github.io/landwatch.ai/)
+An interactive map that visualizes **wildfire risk levels** across Manitoba, Canada, using real-time weather data and AI-driven risk scoring.
+
+🔗 **Live Map:** [https://mojoblitz.github.io/landwatch.ai/](https://mojoblitz.github.io/landwatch.ai/)
 
 ---
 
 ## 📍 Features
-- **Daily updates** — pulls the latest data each night.
-- **Risk levels** — low, medium, high — color-coded for quick visual scanning.
-- **Weather overlays** — includes temperature, humidity, and wind speed for each point.
-- **GeoJSON download** — easily grab the latest data for your own analysis.
-- **Mobile-friendly** — interactive map works across devices.
+- **Interactive wildfire risk map** with zoom & pan  
+- Color-coded **risk levels** (Low 🟢, Medium 🟡, High 🔴)  
+- Popups showing:
+  - Risk score
+  - Temperature
+  - Relative humidity
+  - Wind speed  
+- Built with [Leaflet.js](https://leafletjs.com/) for smooth rendering
+- Automated updates via GitHub Actions
 
 ---
 
-## 🔍 How It Works
-1. **Data Collection** — NASA FIRMS wildfire risk + Open-Meteo weather data.
-2. **Processing Script** — `get_weather_data.py` merges location, risk score, and weather conditions into a single GeoJSON file.
-3. **Automatic Deployment** — GitHub Actions runs the update script nightly and pushes new data to the site.
-4. **Map Display** — The `index.html` uses Leaflet.js to render the interactive map.
+## 🛠 How It Works
+1. **Data Fetching:** Weather data is fetched from the [Open-Meteo API](https://open-meteo.com/) and processed with Python.
+2. **Risk Scoring:** A simple model assigns each point a *risk score* and *risk level*.
+3. **GeoJSON Output:** Data is saved as `geo/risk_latest.geojson`.
+4. **Visualization:** Leaflet renders the points on the live map with color & size encoding.
 
 ---
 
-## 📦 Data Sources
-- [NASA FIRMS](https://firms.modaps.eosdis.nasa.gov/) — Fire Information for Resource Management System
-- [Open-Meteo](https://open-meteo.com/) — Weather forecast API
+## 🚀 Running Locally
 
----
-
-## 📂 Repository Structure
-Add detailed README with project description and usage
+Clone the repository:
+```bash
+git clone https://github.com/Mojoblitz/landwatch.ai.git
+cd landwatch.ai
