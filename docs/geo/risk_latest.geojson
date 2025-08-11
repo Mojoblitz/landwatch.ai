@@ -1,0 +1,13 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "risk": "low" },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-97.1384, 49.8951]
+      }
+    }
+  ]
+}
